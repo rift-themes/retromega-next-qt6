@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtGraphicalEffects 1.12
+import QtQuick
+import Qt5Compat.GraphicalEffects
 
 Item {
     property bool failed: true;

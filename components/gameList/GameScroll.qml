@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import QtQuick
 
 import '../media' as Media
 
@@ -137,7 +137,7 @@ Item {
         settingKey: 'gameListVideo';
         validView: 'gameList';
 
-        onVideoToggled: {
+        onVideoToggled: function(videoPlaying) {
             gameListBoxart.videoPlaying = videoPlaying;
         }
     }

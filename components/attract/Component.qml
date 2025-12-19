@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtMultimedia 5.9
+import QtQuick
+import QtMultimedia
 import SortFilterProxyModel 0.2
 
 Item {
@@ -131,16 +131,21 @@ Item {
         fillMode: VideoOutput.PreserveAspectFit;
         anchors.fill: parent;
         autoPlay: true;
+        loops: MediaPlayer.Infinite;
 
-        onStatusChanged: {
-            if (status === MediaPlayer.InvalidMedia) {
-                nextVideo();
-            }
-
-            if (status === MediaPlayer.EndOfMedia) {
-                nextVideo();
-            }
+        onErrorOccurred: {
+            // Skip to next video on error
+            nextVideo();
         }
+    }
+
+    // Timer to cycle videos since Qt6 doesn't expose mediaStatusChanged
+    Timer {
+        id: videoTimer;
+        interval: 30000;  // 30 seconds per video
+        repeat: true;
+        running: currentView === 'attract';
+        onTriggered: nextVideo();
     }
 
     Text {

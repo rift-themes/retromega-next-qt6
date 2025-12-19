@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import QtQuick
 import SortFilterProxyModel 0.2
 
 import 'components/collectionList' as CollectionList
@@ -153,6 +153,7 @@ FocusScope {
     };
 
     function getMappedGame(index) {
+        if (!currentCollection) return null;
         if (currentCollection.shortName === 'favorites') {
             return api.allGames.get(allFavorites.mapToSource(index));
         } else if (currentCollection.shortName === 'recents') {
@@ -202,7 +203,7 @@ FocusScope {
     SortFilterProxyModel {
         id: sortedCollection;
 
-        sourceModel: currentCollection.games;
+        sourceModel: currentCollection ? currentCollection.games : null;
         sorters: [
             RoleSorter { roleName: 'favorite'; sortOrder: Qt.DescendingOrder; enabled: favoritesOnTop; },
             RoleSorter { roleName: sortKey; sortOrder: sortDir }

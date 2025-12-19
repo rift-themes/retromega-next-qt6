@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtMultimedia 5.9
+import QtQuick
+import QtMultimedia
 
 Item {
     function back() { if (settings.get('navSounds')) backSound.play(); }

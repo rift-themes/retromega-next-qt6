@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtMultimedia 5.9
-import QtGraphicalEffects 1.12
+import QtQuick
+import QtMultimedia
+import Qt5Compat.GraphicalEffects
 
 Item {
     property string settingKey: '';

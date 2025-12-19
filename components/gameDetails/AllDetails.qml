@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtGraphicalEffects 1.12
+import QtQuick
+import Qt5Compat.GraphicalEffects
 
 import '../media' as Media
 
@@ -68,7 +68,7 @@ Item {
         settingKey: 'gameDetailsVideo';
         validView: 'gameDetails';
 
-        onVideoToggled: {
+        onVideoToggled: function(videoPlaying) {
             gameDetailsScreenshot.videoPlaying = videoPlaying;
         }
     }
