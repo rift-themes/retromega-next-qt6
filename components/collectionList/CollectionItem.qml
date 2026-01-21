@@ -107,14 +107,24 @@ Item {
     Image {
         id: device;
 
-        source: '../../assets/images/devices/' + collectionData.getImage(modelData.shortName) + '.png';
+        property string themeSource: '../../assets/images/devices/' + collectionData.getImage(modelData.shortName) + '.png'
+        property string fallbackSource: modelData?.assets?.controller ?? ""
+        property bool useFallback: false
+
+        source: useFallback ? fallbackSource : themeSource;
         width: root.width * .50;
         height: root.height * .65;
         fillMode: Image.PreserveAspectFit;
         horizontalAlignment: Image.AlignHCenter;
         asynchronous: true;
         smooth: true;
-        visible: true;
+        visible: status === Image.Ready;
+
+        onStatusChanged: {
+            if (status === Image.Error && !useFallback && fallbackSource) {
+                useFallback = true;
+            }
+        }
 
         anchors {
             verticalCenter: parent.verticalCenter;
