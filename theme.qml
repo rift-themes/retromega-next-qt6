@@ -1,5 +1,6 @@
 import QtQuick
 import SortFilterProxyModel 0.2
+import Rift 1.0
 
 import 'components/collectionList' as CollectionList
 import 'components/gameList' as GameList
@@ -12,6 +13,15 @@ import 'components/attract' as Attract
 
 FocusScope {
     id: root;
+
+    // RiftFooter customization - hide global footer since theme has its own
+    property bool footerVisible: true
+    // Alternative: style RiftFooter to match theme colors (uncomment to use RiftFooter instead)
+    property color footerBackgroundColor: theme.current.bgColor
+    property color footerTextColor: theme.current.blurTextColor
+    property color footerButtonColor: theme.current.highlightColor
+    property color footerButtonTextColor: theme.current.focusTextColor
+    property real footerBackgroundOpacity: 1.0
 
     property string currentView: 'collectionList';
     property string previousView: 'collectionList';
@@ -46,14 +56,8 @@ FocusScope {
     }
 
     function updateSortedCollection() {
-        if (currentShortName === 'favorites') {
-            currentGameList = allFavorites;
-        } else if (currentShortName === 'recents') {
-            currentGameList = filterLastPlayed;
-        } else {
-            currentGameList = sortedCollection;
-        }
-
+        // All collections now use sortedCollection - Rift provides virtual platforms
+        currentGameList = sortedCollection;
         currentCollection = allCollections[currentCollectionIndex];
         updateGameIndex(0, true);
     }
@@ -83,6 +87,11 @@ FocusScope {
         currentGame = getMappedGame(currentGameIndex);
         gameList.updateIndex(currentGameIndex);
 
+        // Notify Rift of the focused game for SELECT menu
+        if (currentGame && currentGame.extra && currentGame.extra.id) {
+            Rift.setContextGameById(currentGame.extra.id);
+        }
+
         return true;
     }
 
@@ -107,7 +116,7 @@ FocusScope {
         updateGameIndex(api.memory.get('currentGameIndex') ?? -1, true);
 
         // this is done in here to prevent a quick flash of default themes
-        theme.setDarkMode(settings.get('darkMode'));
+        // darkMode is now linked to Rift.darkMode automatically
         theme.setButtonGuide(settings.get('buttonGuide'));
         theme.setFontScale(settings.get('smallFont'));
 
@@ -134,70 +143,12 @@ FocusScope {
 
 
     // code to handle collection modification
-    property var allCollections: {
-        const collections = api.collections.toVarArray();
-
-        if (settings.get('showFavorites')) {
-            collections.unshift({'name': 'Favorites', 'shortName': 'favorites', 'games': allFavorites});
-        }
-
-        if (settings.get('showRecents')) {
-            collections.unshift({'name': 'Last Played', 'shortName': 'recents', 'games': filterLastPlayed});
-        }
-
-        if (settings.get('showAllGames')) {
-            collections.unshift({'name': 'All Games', 'shortName': 'allgames', 'games': api.allGames});
-        }
-
-        return collections;
-    };
+    // Use api.collections directly - Rift provides virtual platforms (Favorites, Last Played, etc.)
+    property var allCollections: api.collections.toVarArray();
 
     function getMappedGame(index) {
         if (!currentCollection) return null;
-        if (currentCollection.shortName === 'favorites') {
-            return api.allGames.get(allFavorites.mapToSource(index));
-        } else if (currentCollection.shortName === 'recents') {
-            return api.allGames.get(filterLastPlayed.mapToSource(index));
-        } else {
-            return currentCollection.games.get(sortedCollection.mapToSource(index));
-        }
-    }
-
-    SortFilterProxyModel {
-        id: allFavorites;
-
-        sourceModel: api.allGames;
-        filters: [
-            ValueFilter { roleName: 'favorite'; value: true; },
-            ExpressionFilter { enabled: onlyMultiplayer; expression: { return players > 1; } },
-            RegExpFilter { roleName: 'title'; pattern: nameFilter; caseSensitivity: Qt.CaseInsensitive; enabled: nameFilter !== ''; }
-        ]
-        sorters: RoleSorter { roleName: sortKey; sortOrder: sortDir }
-    }
-
-    SortFilterProxyModel {
-        id: filterLastPlayed;
-
-        sourceModel: api.allGames;
-        filters: [
-            ValueFilter { roleName: 'favorite'; value: true; enabled: onlyFavorites; },
-            ExpressionFilter { enabled: onlyMultiplayer; expression: { return players > 1; } },
-            RegExpFilter { roleName: 'title'; pattern: nameFilter; caseSensitivity: Qt.CaseInsensitive; enabled: nameFilter !== ''; },
-            ExpressionFilter {
-                expression: {
-                    const lastPlayedTime = lastPlayed.getTime();
-                    if (isNaN(lastPlayedTime)) return false;
-
-                    const curTime = new Date().getTime();
-                    const lastMonth = 1000 * 60 * 60 * 24 * 31; // ms in 31 days
-                    return (curTime - lastPlayedTime < lastMonth)
-                }
-            }
-        ]
-        sorters: [
-            RoleSorter { roleName: 'favorite'; sortOrder: Qt.DescendingOrder; enabled: favoritesOnTop; },
-            RoleSorter { roleName: 'lastPlayed'; sortOrder: Qt.DescendingOrder; }
-        ]
+        return currentCollection.games.get(sortedCollection.mapToSource(index));
     }
 
     SortFilterProxyModel {

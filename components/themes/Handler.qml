@@ -1,7 +1,8 @@
 import QtQuick
+import Rift 1.0
 
 Item {
-    property Item current: lightTheme;
+    property Item current: Rift.darkMode ? darkTheme : lightTheme
     property Item buttonGuide: switchButtons;
     property double fontScale: 1.0;
 
@@ -10,14 +11,6 @@ Item {
             fontScale = 0.5;
         } else {
             fontScale = 1.0;
-        }
-    }
-
-    function setDarkMode(value) {
-        if (value) {
-            current = darkTheme;
-        } else {
-            current = lightTheme;
         }
     }
 
@@ -30,9 +23,16 @@ Item {
     }
 
     Component.onCompleted: {
-        settings.addCallback('darkMode', setDarkMode);
         settings.addCallback('buttonGuide', setButtonGuide);
         settings.addCallback('smallFont', setFontScale);
+    }
+
+    // Listen for Rift.darkMode changes
+    Connections {
+        target: Rift
+        function onDarkModeChanged() {
+            current = Rift.darkMode ? darkTheme : lightTheme;
+        }
     }
 
     LightTheme { id: lightTheme; }

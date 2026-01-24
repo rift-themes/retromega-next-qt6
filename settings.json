@@ -1,0 +1,94 @@
+{
+  "settings": [
+    {
+      "key": "bgMusic",
+      "label": "Background Music",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "navSounds",
+      "label": "Navigation Sounds",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "buttonGuide",
+      "label": "XBox Button Guide",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "twelveHour",
+      "label": "Twelve Hour Clock",
+      "type": "toggle",
+      "default": false
+    },
+    {
+      "key": "smallFont",
+      "label": "Use Smaller Font",
+      "type": "toggle",
+      "default": false
+    },
+    {
+      "key": "preferBox",
+      "label": "Prefer Box to Poster",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "gameListVideo",
+      "label": "Video on Game List",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "gameDetailsVideo",
+      "label": "Video on Game Details",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "quietVideo",
+      "label": "Silent Videos",
+      "type": "toggle",
+      "default": false
+    },
+    {
+      "key": "quickVideo",
+      "label": "Shorter Video Delay",
+      "type": "toggle",
+      "default": false
+    },
+    {
+      "key": "dropShadow",
+      "label": "Enable Video/Image Shadow",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "resetNameFilter",
+      "label": "Clear Name Filter on Reload",
+      "type": "toggle",
+      "default": false
+    },
+    {
+      "key": "attractTitle",
+      "label": "Game Title on Attract Mode",
+      "type": "toggle",
+      "default": true
+    },
+    {
+      "key": "favoritesOnTop",
+      "label": "Favorites on Top",
+      "type": "toggle",
+      "default": false
+    },
+    {
+      "key": "delayedImage",
+      "label": "Delayed Images",
+      "type": "toggle",
+      "default": false
+    }
+  ]
+}

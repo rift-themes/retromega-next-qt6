@@ -1,11 +1,12 @@
 import QtQuick
+import Rift 1.0
 
 Item {
     property var keys: [
-        'bgMusic', 'navSounds', 'darkMode', 'buttonGuide', 'twelveHour',
+        'bgMusic', 'navSounds', 'buttonGuide', 'twelveHour',
         'smallFont', 'preferBox', 'gameListVideo', 'gameDetailsVideo', 'quietVideo',
         'quickVideo', 'dropShadow', 'resetNameFilter', 'attractTitle',
-        'favoritesOnTop', 'delayedImage', 'showAllGames', 'showRecents', 'showFavorites'
+        'favoritesOnTop', 'delayedImage'
     ];
 
     function title(key) { return titles[key]; }
@@ -13,7 +14,9 @@ Item {
 
     function get(key) {
         if (values[key] === null) {
-            set(key, api.memory.get(key) ?? defaults[key]);
+            // Use Rift.themeSetting() with fallback to default
+            var riftValue = Rift.themeSetting(key);
+            set(key, riftValue !== undefined ? riftValue : defaults[key]);
         }
 
         return values[key];
@@ -21,7 +24,7 @@ Item {
 
     function saveAll() {
         for (const key of keys) {
-            api.memory.set(key, get(key));
+            Rift.setThemeSetting(key, get(key));
         }
     }
 
@@ -29,6 +32,7 @@ Item {
         if (values[key] === undefined) return;
 
         values[key] = value;
+        Rift.setThemeSetting(key, value);
         callback(key);
     }
 
@@ -46,10 +50,20 @@ Item {
         }
     }
 
+    // Listen for real-time theme setting changes from Rift
+    Connections {
+        target: Rift
+        function onThemeSettingChanged(key, value) {
+            if (values[key] !== undefined && values[key] !== value) {
+                values[key] = value;
+                callback(key);
+            }
+        }
+    }
+
     property var defaults: {
         'bgMusic': true,
         'navSounds': true,
-        'darkMode': false,
         'buttonGuide': false,
         'twelveHour': false,
         'smallFont': false,
@@ -62,16 +76,12 @@ Item {
         'resetNameFilter': false,
         'attractTitle': true,
         'favoritesOnTop': false,
-        'delayedImage': false,
-        'showAllGames': true,
-        'showRecents': true,
-        'showFavorites': true,
+        'delayedImage': false
     }
 
     property var values: {
         'bgMusic': null,
         'navSounds': null,
-        'darkMode': null,
         'buttonGuide': null,
         'twelveHour': null,
         'smallFont': null,
@@ -84,16 +94,12 @@ Item {
         'resetNameFilter': null,
         'attractTitle': null,
         'favoritesOnTop': null,
-        'delayedImage': null,
-        'showAllGames': null,
-        'showRecents': null,
-        'showFavorites': null,
+        'delayedImage': null
     }
 
     property var callbacks: {
         'bgMusic': [],
         'navSounds': [],
-        'darkMode': [],
         'buttonGuide': [],
         'twelveHour': [],
         'smallFont': [],
@@ -106,16 +112,12 @@ Item {
         'resetNameFilter': [],
         'attractTitle': [],
         'favoritesOnTop': [],
-        'delayedImage': [],
-        'showAllGames': [],
-        'showRecents': [],
-        'showFavorites': [],
+        'delayedImage': []
     }
 
     property var titles: {
         'bgMusic': 'Background Music',
         'navSounds': 'Navigation Sounds',
-        'darkMode': 'Dark Theme',
         'buttonGuide': 'XBox Button Guide',
         'twelveHour': 'Twelve Hour Clock',
         'smallFont': 'Use Smaller Font',
@@ -128,9 +130,6 @@ Item {
         'resetNameFilter': 'Clear Name Filter on Reload',
         'attractTitle': 'Game Title on Attract Mode',
         'favoritesOnTop': 'Favorites on Top',
-        'delayedImage': 'Delayed Images',
-        'showAllGames': 'Show All Games Collection',
-        'showRecents': 'Show Last Played Collection',
-        'showFavorites': 'Show Favorites Collection',
+        'delayedImage': 'Delayed Images'
     }
 }

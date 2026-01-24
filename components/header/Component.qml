@@ -5,7 +5,7 @@ Rectangle {
     property string shade: 'light';
     property bool showTitle: false;
     property bool showSorting: true;
-    property bool showSettings: true;
+    property bool showSettings: false;
     property string title: '';
 
     property bool showBattery: {
