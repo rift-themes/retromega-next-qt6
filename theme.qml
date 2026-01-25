@@ -23,6 +23,15 @@ FocusScope {
     property color footerButtonTextColor: theme.current.focusTextColor
     property real footerBackgroundOpacity: 1.0
 
+    // Menu customization (SELECT, START, Settings)
+    property color menuBackgroundColor: theme.current.bgColor
+    property color menuTextColor: theme.current.focusTextColor
+    property color menuAccentColor: theme.current.highlightColor
+    property color menuSecondaryColor: Qt.darker(theme.current.bgColor, 1.1)
+    property color menuBorderColor: Qt.darker(theme.current.bgColor, 1.3)
+    property real menuBackgroundOpacity: 0.98
+    property string menuFontFamily: ""
+
     property string currentView: 'collectionList';
     property string previousView: 'collectionList';
     property var currentViewCallbacks: [];
