@@ -2,10 +2,13 @@ import QtQuick
 import Qt5Compat.GraphicalEffects
 
 Item {
+    id: root
+
     property bool failed: true;
     property bool videoPlaying: false;
     property string imageSource: '';
     property bool delayedImage: false;
+    property var gameData: null;  // For download spinner support
 
     visible: {
         if (failed) return false;
@@ -133,5 +136,13 @@ Item {
         samples: 41;
         cached: false;
         visible: true;
+    }
+
+    // Download spinner overlay
+    DownloadingSpinner {
+        anchors.fill: boxartBuffer
+        gameData: root.gameData
+        targetImage: boxartImage
+        sourceBinding: function() { return root.imageSource }
     }
 }

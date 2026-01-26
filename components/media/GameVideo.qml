@@ -3,9 +3,14 @@ import QtMultimedia
 import Qt5Compat.GraphicalEffects
 
 Item {
+    id: root
+
     property string settingKey: '';
     property string validView: '';
     signal videoToggled(bool videoPlaying);
+
+    // Get game ID for video update detection
+    readonly property int gameId: (typeof currentGame !== "undefined" && currentGame) ? (currentGame.extra?.id ?? -1) : -1
 
     function switchVideo() {
         videoPlayer.stop();
@@ -72,6 +77,17 @@ Item {
                 switchVideo();
             } else {
                 videoOff();
+            }
+        }
+    }
+
+    // Listen for video downloads completing
+    Connections {
+        target: typeof Rift !== "undefined" ? Rift : null
+        function onGameVideoUpdated(updatedGameId) {
+            if (updatedGameId === root.gameId && currentView === validView) {
+                // Video was downloaded for current game, restart the timer to load it
+                switchVideo();
             }
         }
     }

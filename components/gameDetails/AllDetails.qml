@@ -57,6 +57,7 @@ Item {
         height: parent.height * .675;
         x: parent.width / 2;
         imageSource: imgSrc;
+        gameData: currentGame;
     }
 
     Media.GameVideo {
