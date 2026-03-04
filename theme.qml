@@ -25,7 +25,7 @@ FocusScope {
 
     // Menu customization (SELECT, START, Settings)
     property color menuBackgroundColor: theme.current.bgColor
-    property color menuTextColor: theme.current.focusTextColor
+    property color menuTextColor: theme.current.detailsColor
     property color menuAccentColor: theme.current.highlightColor
     property color menuSecondaryColor: Qt.darker(theme.current.bgColor, 1.1)
     property color menuBorderColor: Qt.darker(theme.current.bgColor, 1.3)
